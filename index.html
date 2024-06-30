@@ -33,7 +33,7 @@
             background-color: rgba(0, 0, 0, 0.5);
             padding: 20px;
             border-radius: 10px;
-            font-size: 25vw;
+            font-size: 15vw; /* Incrementar el tamaño de la fuente */
         }
     </style>
 </head>
@@ -64,10 +64,16 @@
             document.getElementById('localTime').textContent = `${hours}:${minutes}:${seconds}`;
         }
 
-        function updateLocalTemp() {
-            // Esta función debería actualizar la temperatura local con datos reales.
-            // Aquí vamos a simular una temperatura fija.
-            document.getElementById('localTemp').textContent = '22°C'; // Simulación de temperatura
+        async function updateLocalTemp() {
+            try {
+                const response = await fetch('https://api.openweathermap.org/data/2.5/weather?q=Palencia,ES&units=metric&appid=484f48e55ea5e7d62db06a7c98915907');
+                const data = await response.json();
+                const temperature = Math.round(data.main.temp); // Redondear la temperatura a la unidad más cercana
+                document.getElementById('localTemp').textContent = `${temperature}°C`;
+            } catch (error) {
+                console.error('Error fetching temperature data:', error);
+                document.getElementById('localTemp').textContent = 'N/A';
+            }
         }
 
         function rotateContent() {
@@ -77,6 +83,7 @@
 
         setInterval(updateLocalTime, 1000);
         setInterval(rotateContent, 5000);
+        setInterval(updateLocalTemp, 60000); // Actualizar temperatura cada minuto
 
         // Inicializar la temperatura y el tiempo local
         updateLocalTime();
